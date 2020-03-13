@@ -54,8 +54,12 @@ fn main() {
 
 fn next(x: usize, y: usize) -> Result<Vec<(usize,usize)>, &'static str> {
     let mut next_xy : Vec<(usize,usize)> = Vec::new();
-    next_xy.push((x+1,y));
-    next_xy.push((x,y+1));
+    if x + 1 < LSIZE {
+        next_xy.push((x+1,y));
+    }
+    if y + 1 < LSIZE {
+        next_xy.push((x,y+1));
+    }
     //next_xy.push((x-1,y));
     //next_xy.push((x,y-1));
     return Ok(next_xy);
@@ -64,20 +68,31 @@ fn next(x: usize, y: usize) -> Result<Vec<(usize,usize)>, &'static str> {
 /// Function to advance a step in the labyrinth 
 /// takes x and y positions, a ref to the lab and returns a bool 
 /// telling whether or not that branch found an exit
-fn advance(x: usize, y: usize, lab: &Vec<Vec<char>>, mut solution: &Vec<(usize,usize)> ) -> Result<bool, &'static str> {
+fn advance(x: usize, y: usize, lab: &Vec<Vec<char>>, mut solution: &mut Vec<(usize,usize)> ) -> Result<bool, &'static str> {
 
     let mut possible_paths = next(x,y)?;
     let mut ret: Result<bool,&'static str> = Ok(false);
 
+    println!("trying pos: {:?}", (x,y));
+
     for (new_x,new_y) in possible_paths {
         match lab[new_x][new_y] {
-            '#' => return Ok(false),
-            '>' => return Ok(false),
+            '#' => ret = Ok(false),
+            '>' => ret = Ok(false),
             'X' => ret = Ok(true),
             'O' => ret = advance(new_x, new_y, &lab, &mut solution),
             _   => return Err("Invalid character found"),
         }
+        match ret {
+            Ok(true) => break,
+            _ => (),
+        }
     }
     // Do somethign with ret, store path to a solution
+    match ret {
+        Ok(true) => solution.push((x,y)),
+        Ok(false) => println!("wrong path: {:?}", (x,y)),
+        _ => return ret,
+    }
     return ret;
 }
