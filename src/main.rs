@@ -1,11 +1,11 @@
 //use std::thread;
 //use std::sync::{Arc, Mutex};
 
-const LSIZE: usize = 10;
-const WALL: char = '#';
-const HALL: char = 'O';
-const BEG: char = '>';
-const END: char = 'X';
+const LSIZE: usize = 10; /// Lenght of the Labyrinth
+const WALL: char = '#';  /// Identification of the WALLS
+const HALL: char = 'O';  /// Identification of the HALLS
+const BEG: char = '>';   /// BEGINNING of the labyrinth 
+const END: char = 'X';   /// END of the labyrith
 
 fn main() {
     let mut lab = vec![vec![WALL;LSIZE];LSIZE];
@@ -52,7 +52,21 @@ fn main() {
     }
 }
 
-fn next(x: usize, y: usize) -> Result<Vec<(usize,usize)>, &'static str> {
+
+/// Function that takes a x and y position and returns a vector with the x,y tuples that can be advaced from 
+/// the current position
+///
+/// * `x` - The horizontal position
+/// * `y` - The vertical position
+///
+/// # Example:
+///
+/// ```
+/// // Assuming been on position: (2,4)
+/// let moves = vec![(3,4),(2,5);
+/// asserteq!(moves,_next(2,4));
+/// ```
+fn _next(x: usize, y: usize) -> Result<Vec<(usize,usize)>, &'static str> {
     let mut next_xy : Vec<(usize,usize)> = Vec::new();
     if x + 1 < LSIZE {
         next_xy.push((x+1,y));
@@ -65,12 +79,12 @@ fn next(x: usize, y: usize) -> Result<Vec<(usize,usize)>, &'static str> {
     return Ok(next_xy);
 }
 
-/// Function to advance a step in the labyrinth 
+/// Recursive Function to advance a step in the labyrinth in the valid paths
 /// takes x and y positions, a ref to the lab and returns a bool 
 /// telling whether or not that branch found an exit
 fn advance(x: usize, y: usize, lab: &Vec<Vec<char>>, mut solution: &mut Vec<(usize,usize)> ) -> Result<bool, &'static str> {
 
-    let possible_paths = next(x,y)?;
+    let possible_paths = _next(x,y)?;
     let mut ret: Result<bool,&'static str> = Ok(false);
 
     println!("trying pos: {:?}", (x,y));
