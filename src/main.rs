@@ -1,5 +1,5 @@
-use std::thread;
-use std::sync::{Arc, Mutex};
+//use std::thread;
+//use std::sync::{Arc, Mutex};
 
 const LSIZE: usize = 10;
 const WALL: char = '#';
@@ -8,7 +8,7 @@ const BEG: char = '>';
 const END: char = 'X';
 
 fn main() {
-    let mut lab = vec![vec!['#';LSIZE];LSIZE];
+    let mut lab = vec![vec![WALL;LSIZE];LSIZE];
 
 
     /* Set some HALL area to walk to labyrinth */
@@ -30,25 +30,25 @@ fn main() {
     /* find the exit with recursion */
 
     // count the number of exits from each of the cells
-    let mut lab_out_count = vec![[0u64; LSIZE];LSIZE];
+    //let mut lab_out_count = vec![[0u64; LSIZE];LSIZE];
     // store the min cost function in the map from each cell
-    let mut lab_out_min_count = vec![[0u64; LSIZE];LSIZE];
+    //let mut lab_out_min_count = vec![[0u64; LSIZE];LSIZE];
 
 
     /* PRINT the LAB */
-    for (x, row) in lab.iter_mut().enumerate() {
-        for (y, col) in row.iter_mut().enumerate() {
+    for (_x, row) in lab.iter_mut().enumerate() {
+        for (_y, col) in row.iter_mut().enumerate() {
             print!("{}", col);
         }
         println!("");
     }
     let mut solution : Vec<(usize,usize)> = Vec::<(usize,usize)>::new();
-    let res=match advance(5,2,&lab, &mut solution) {
+    let _res=match advance(5,2,&lab, &mut solution) {
         Ok(bool_result) => bool_result,
-        Err(err_str)  => return , // TODO: how to print here... println!("Error: Advance {}", err_str) 
+        Err(_err_str)  => return , // TODO: how to print here... println!("Error: Advance {}", err_str) 
     };
     for step in &solution {
-        println!("{:?}\n", step);
+        println!("{:?}", step);
     }
 }
 
@@ -70,7 +70,7 @@ fn next(x: usize, y: usize) -> Result<Vec<(usize,usize)>, &'static str> {
 /// telling whether or not that branch found an exit
 fn advance(x: usize, y: usize, lab: &Vec<Vec<char>>, mut solution: &mut Vec<(usize,usize)> ) -> Result<bool, &'static str> {
 
-    let mut possible_paths = next(x,y)?;
+    let possible_paths = next(x,y)?;
     let mut ret: Result<bool,&'static str> = Ok(false);
 
     println!("trying pos: {:?}", (x,y));
