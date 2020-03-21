@@ -1,6 +1,11 @@
 //use std::thread;
 //use std::sync::{Arc, Mutex};
 
+#![deny(missing_docs)]
+
+//! A simple labyrinth solver
+//! To dive into the intricacies of Rust
+
 const LSIZE: usize = 10; /// Lenght of the Labyrinth
 const WALL: char = '#';  /// Identification of the WALLS
 const HALL: char = 'O';  /// Identification of the HALLS
@@ -9,7 +14,6 @@ const END: char = 'X';   /// END of the labyrith
 
 fn main() {
     let mut lab = vec![vec![WALL;LSIZE];LSIZE];
-
 
     /* Set some HALL area to walk to labyrinth */
     for (x, row) in lab.iter_mut().enumerate() {
@@ -82,6 +86,9 @@ fn _next(x: usize, y: usize) -> Result<Vec<(usize,usize)>, &'static str> {
 /// Recursive Function to advance a step in the labyrinth in the valid paths
 /// takes x and y positions, a ref to the lab and returns a bool 
 /// telling whether or not that branch found an exit
+/// 
+/// * `x` - The horizontal position
+/// * `y` - The vertical position
 fn advance(x: usize, y: usize, lab: &Vec<Vec<char>>, mut solution: &mut Vec<(usize,usize)> ) -> Result<bool, &'static str> {
 
     let possible_paths = _next(x,y)?;
