@@ -1,16 +1,17 @@
-//use std::thread;
-//use std::sync::{Arc, Mutex};
-
 #![deny(missing_docs)]
 
 //! A simple labyrinth solver
 //! To dive into the intricacies of Rust
+
+//use std::thread;
+//use std::sync::{Arc, Mutex};
 
 const LSIZE: usize = 10; /// Lenght of the Labyrinth
 const WALL: char = '#';  /// Identification of the WALLS
 const HALL: char = 'O';  /// Identification of the HALLS
 const BEG: char = '>';   /// BEGINNING of the labyrinth 
 const END: char = 'X';   /// END of the labyrith
+const WIDTH: usize=2;    /// Space for printing labyrinth characters
 
 /// Main function to just perform a simple call to resolve the labyrinth
 fn main() {
@@ -32,6 +33,8 @@ fn solve_lab() -> Result<bool,&'static str> {
         solution : Vec::<(usize,usize)>::new(),
         solved : false ,
         created: false,
+        start: (5,2),
+        end: (9,9),
         };
     let _ = lab.create()?;
     let _ = lab.print()?;
@@ -40,12 +43,13 @@ fn solve_lab() -> Result<bool,&'static str> {
     return Ok(true);
 }
 
-
 struct Labyrinth {
     lab : Vec<Vec<char>>,
     solution : Vec<(usize,usize)>,
     solved: bool,
     created: bool,
+    start: (usize,usize),
+    end: (usize, usize),
 }
 
 /// Trait that has all the methods to create a labyrinth and solve it
@@ -68,18 +72,27 @@ impl Labyrinth {
         }
 
         /* Set the start and finish */
-        self.lab [5][2] = BEG;
-        self.lab [9][9] = END;
+        let (x_start,y_start) = self.start;
+        self.lab [x_start][y_start] = BEG;
+        let (x_end,y_end) = self.end;
+        self.lab [x_end][y_end] = END;
         return Ok(true);
     }
     fn print(&self) -> Result<bool,&'static str> {
         if self.created == true {
             return Err("Labyrinth not yet created");
         }
-        for (_x, row) in self.lab.iter().enumerate() {
-            for (_y,col) in row.iter().enumerate() {
-                print!("{}",col);
+        print!("       ");
+        for y in 0..self.lab.len() {
+            print!("{val:>w$}",val=y, w=WIDTH);
+        }
+        println!();
+        for (x, row) in self.lab.iter().enumerate() {
+            print!("x = {val:>w$} ", val=x, w=WIDTH);
+            for (y,col) in row.iter().enumerate() {
+                print!("{val:>w$}",val=col, w=WIDTH);
             }
+            println!();
         }
         return Ok(true);
     }
@@ -93,9 +106,11 @@ impl Labyrinth {
             return Err("Labyrinth not solved");
         }
 
+        println!("Solution in tuples:");
         for step in &self.solution {
-            println!("{:?}", step);
+            print!("{:?}", step);
         }
+        println!();
         return Ok(true);
     }
     /// Function that takes a x and y position and returns a vector with the x,y tuples that can be advaced from 
